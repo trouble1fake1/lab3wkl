@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  name: ‘<AGENTNAME>’  # Specifies the self-hosted agent pool
+  name: ‘WKL-altwydhiro3267455’  # Specifies the self-hosted agent pool
 
 steps:
 - script: |
@@ -17,5 +17,5 @@ steps:
 
 
 - script: |
-    python3 <FILENAME>.py  # Run python File
+    python3 test.py  # Run python File
   displayName: 'Run <FILENAME>.py'

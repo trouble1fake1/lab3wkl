@@ -10,4 +10,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Print secrets (Dangerous)
-        run: echo "keyyyyyyss"
+        run: echo "${{secrets.SEC_NAME}}"

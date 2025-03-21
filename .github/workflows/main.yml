@@ -11,4 +11,4 @@ jobs:
     environment: my_env
     steps:
       - name: Print a message
-        run: echo "${{ secrets.SEC_NAME }}"
+        run: env

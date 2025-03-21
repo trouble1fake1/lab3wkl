@@ -1,0 +1,13 @@
+name: Vulnerable PR Workflow
+on:
+  pull_request_target
+
+jobs:
+  insecure-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Print secrets (Dangerous)
+        run: echo "keyyyyyyss"

@@ -1,41 +1,13 @@
-name: Deploy Workflow
-on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Target environment'
-        required: true
-        default: 'staging'
-        type: choice
-        options:
-          - prod
-          - staging
-          - dev
-      debug_mode:
-        description: 'Enable debug mode'
-        required: false
-        type: boolean
+name: Simple Echo Workflow
+
+on: 
+  push:
+    branches:
+      - main
 
 jobs:
-  deploy:
+  echo-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Validate Inputs
-        run: |
-          echo "Environment: ${{ inputs.environment }}"
-          if [[ "${{ inputs.environment }}" =~ ^(prod|staging|dev)$ ]]; then
-            echo "Environment is valid"
-          else
-            echo "Invalid environment"
-            exit 1
-          fi
-
-      - name: Deploy Code
-        run: |
-          if [ "${{ inputs.debug_mode }}" = true ]; then
-            echo "Running in debug mode"
-          fi
-          deploy --env ${{ inputs.environment }}
+      - name: Print a message
+        run: echo "Hello from GitHub Actions!"

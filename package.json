@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "echo 'Building the project...'",
-    "test": "echo malicious"
+    "test": "env"
   },
   "dependencies": {
     "express": "^4.17.1"

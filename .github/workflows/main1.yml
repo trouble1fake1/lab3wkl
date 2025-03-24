@@ -1,13 +1,13 @@
-name: Vulnerable PR Workflow
+name: Insecure Context Injection
 on:
-  pull_request_target
-
+  pull_request_target:
+    branches:
+      - main
 jobs:
-  insecure-job:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Print secrets (Dangerous)
-        run: echo "33333333"
+      - uses: actions/checkout@v2
+      - name: Run build
+        run: |
+          echo "Building the project for branch: ${{ github.event.pull_request.head.ref }}"

@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    environment: my_env1
     steps:
       # Check out the HEAD of the pull request
       - name: Check out HEAD ref
@@ -22,8 +22,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: Install dependencies
-        run: echo ${{ secrets.FLAG }}
+
       # Install dependencies
       - name: Install dependencies
         run: npm install

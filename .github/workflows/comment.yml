@@ -1,0 +1,18 @@
+name: Issue Comment Trigger Workflow
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  comment-job:
+    runs-on: ubuntu-latest
+    if: contains(github.event.comment.body, '/benchmark')  # Condition to check for /benchmark
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      
+      - name: Run bash command using comment body
+        run: |
+          comment_body="${{ github.event.comment.body }}"
+          echo "The comment body contains: $comment_body"

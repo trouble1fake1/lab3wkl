@@ -4,7 +4,7 @@ const app = express();
 const SECRET_KEY = "supersecretkey123";
 
 app.get('/', (req, res) => {
-    res.send('Vulnerable Node.js App hacked!.aaaaaa.............');
+    res.send('Vulnerable Node.js App hacked!.aadfhdfhdfhaaaa.............');
 });
 
 app.get('/debug', (req, res) => {

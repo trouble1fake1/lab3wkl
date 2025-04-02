@@ -1,4 +1,4 @@
-name: Deploy Malicious Image
+name: CI/CD Deploy on Commit (Self-Hosted)
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -15,11 +16,23 @@ jobs:
       - name: Log in to Azure Container Registry
         run: echo "${{ secrets.ACR_PASSWORD }}" | docker login offensivewebapp.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
 
-      - name: Pull malicious image
+      - name: Pull latest base image
         run: docker pull offensivewebapp.azurecr.io/malicious-image:latest
 
-      - name: Run container from image
-        run: docker run -d --name malicious-container -p 8080:80 offensivewebapp.azurecr.io/malicious-image:latest
+      - name: Stop existing container (if running)
+        run: |
+          docker stop malicious-webapp || true
+          docker rm malicious-webapp || true
 
-      - name: Simulate deployment step
-        run: curl http://localhost:8080 || echo "Simulated check app may not respond here in CI"
+      - name: Deploy updated container with mounted code
+        run: |
+          docker run -d \
+            --name malicious-webapp \
+            -v ${{ github.workspace }}:/app \
+            -p 8080:80 \
+            offensivewebapp.azurecr.io/malicious-image:latest
+
+      - name: Health check on running container
+        run: |
+          sleep 5
+          curl -s http://localhost:8080 || echo "App may not be fully up"

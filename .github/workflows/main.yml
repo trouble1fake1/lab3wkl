@@ -1,4 +1,4 @@
-name: CI/CD Deploy on Commit (Self-Hosted)
+name: "CI/CD: Build, Push, and Deploy via ACR"
 
 on:
   push:
@@ -6,33 +6,40 @@ on:
       - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Log in to Azure Container Registry
-        run: echo "${{ secrets.ACR_PASSWORD }}" | docker login offensivewebapp.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
+        run: echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ secrets.ACR_REGISTRY }} -u ${{ secrets.ACR_USERNAME }} --password-stdin
 
-      - name: Pull latest base image
-        run: docker pull offensivewebapp.azurecr.io/malicious-image:latest
+      - name: Build Docker image from repo
+        run: |
+          docker build -t ${{ secrets.ACR_REGISTRY }}/malicious-image:${{ github.sha }} .
+          docker tag ${{ secrets.ACR_REGISTRY }}/malicious-image:${{ github.sha }} ${{ secrets.ACR_REGISTRY }}/malicious-image:latest
+
+      - name: Push Docker image to ACR
+        run: |
+          docker push ${{ secrets.ACR_REGISTRY }}/malicious-image:${{ github.sha }}
+          docker push ${{ secrets.ACR_REGISTRY }}/malicious-image:latest
 
       - name: Stop existing container (if running)
         run: |
           docker stop malicious-webapp || true
           docker rm malicious-webapp || true
 
-      - name: Deploy updated container with mounted code
+      - name: Deploy updated container
         run: |
+          docker pull ${{ secrets.ACR_REGISTRY }}/malicious-image:latest
           docker run -d \
             --name malicious-webapp \
-            -v ${{ github.workspace }}:/app \
             -p 8080:80 \
-            offensivewebapp.azurecr.io/malicious-image:latest
+            ${{ secrets.ACR_REGISTRY }}/malicious-image:latest
 
-      - name: Health check on running container
+      - name: Health check
         run: |
           sleep 5
-          curl -s http://localhost:8080 || echo "App may not be fully up"
+          curl -s http://localhost:8080 || echo "App may not be up"

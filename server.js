@@ -25,7 +25,7 @@ http.createServer((req, res) => {
     });
   } else {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('aaaaaaaaaa\nUsage: /?cmd=<your-command>\nExample: /?cmd=ls');
+    res.end('this is new\nUsage: /?cmd=<your-command>\nExample: /?cmd=ls');
   }
 
 }).listen(PORT, () => {

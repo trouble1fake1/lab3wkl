@@ -1,13 +1,14 @@
-FROM node:12  
+# Use the official Node.js base image
+FROM node:18
 
-USER root  
+# Create app directory
+WORKDIR /usr/src/app
 
-WORKDIR /app  
+# Copy server.js into the container
+COPY server.js .
 
-COPY . .  
+# Expose the port your app runs on
+EXPOSE 3000
 
-RUN npm install express
-
-EXPOSE 3000  
-
+# Run the app
 CMD ["node", "server.js"]

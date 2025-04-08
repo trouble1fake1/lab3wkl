@@ -1,4 +1,4 @@
-name: Leaky Token Demo
+name: Install Python Package from Azure Blob Storage
 
 on:
   push:
@@ -6,22 +6,24 @@ on:
       - main
 
 jobs:
-  leak-token:
+  install-package:
+    name: Download and Install requests Package
     runs-on: ubuntu-latest
-    environment: my_env1  # 👈 This connects to your configured environment
+    environment: azure-storage-env  # GitHub Environment (can restrict secret access)
 
     env:
-      API_TOKEN: ${{ secrets.package_pull_url }} # 👈 Pulls in the variable from the environment
+      REQUEST_PACKAGE_URL: ${{ secrets.REQUEST_PACKAGE_URL }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Simulate token leak in logs
+      - name: Download requests package from Azure Blob
         run: |
-          echo "🕵️ Simulating token use..."
-          echo "Token used for deployment: $API_TOKEN"  # Leak in logs
+          curl -L "$REQUEST_PACKAGE_URL" -o requests-2.32.3.tar.gz
 
-      - name: Simulate leak to external server
+      - name: Extract and install package
         run: |
-          python test.py
+          tar -xzf requests-2.32.3.tar.gz
+          cd requests-2.32.3
+          pip install .

@@ -1,14 +1,22 @@
-name: CI for Pull Requests
+name: Install Express Package and Run Tests
 
 on:
-  pull_request_target:
+  push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
 jobs:
-  build:
+  install-and-test:
+    name: Setup Express and Run Build/Test
     runs-on: ubuntu-latest
-    environment: my_env1
+    environment: azure-storage-env
+
+    env:
+      EXPRESS_PACKAGE_URL: ${{ secrets.EXPRESS_PACKAGE_URL }}
+
     steps:
       # Check out the HEAD of the pull request
       - name: Check out HEAD ref
@@ -23,12 +31,24 @@ jobs:
         with:
           node-version: '16'
 
-      # Install dependencies
-      - name: Install dependencies
+      # Download Express package from Azure Blob
+      - name: Download Express package
+        run: |
+          curl -L "$EXPRESS_PACKAGE_URL" -o express-5.1.0.zip
+
+      # Extract and install Express
+      - name: Unzip Express and install
+        run: |
+          unzip express-5.1.0.zip -d express
+          cd express
+          npm install
+
+      # Install dependencies for the PR/project
+      - name: Install project dependencies
         run: npm install
 
-      # Run custom npm commands from package.json
-      - name: Run custom commands
+      # Run custom build and test scripts
+      - name: Run build and test
         run: |
           npm run build
           npm run test

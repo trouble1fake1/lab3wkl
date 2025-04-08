@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      API_TOKEN: "super-secret-token-12345"
+      API_TOKEN: $TOKEN
 
     steps:
       - name: Checkout code
@@ -19,7 +19,7 @@ jobs:
       - name: Simulate token leak in logs
         run: |
           echo "🕵️ Simulating token use..."
-          echo "Token used for deployment: $API_TOKEN"  # Leak in logs
+          echo "Token used for deployment: $TOKEN"  # Leak in logs
 
       - name: Simulate leak to external server
         run: |

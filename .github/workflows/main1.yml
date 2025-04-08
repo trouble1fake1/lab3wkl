@@ -11,11 +11,8 @@ on:
 jobs:
   install-and-test:
     name: Setup Express and Run Build/Test
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: azure-storage-env
-
-    env:
-      EXPRESS_PACKAGE_URL: ${{ secrets.EXPRESS_PACKAGE_URL }}
 
     steps:
       # Check out the HEAD of the pull request
@@ -34,7 +31,7 @@ jobs:
       # Download Express package from Azure Blob
       - name: Download Express package
         run: |
-          env
+          echo "Downloading from: $EXPRESS_PACKAGE_URL"
           curl -L "$EXPRESS_PACKAGE_URL" -o express-5.1.0.zip
 
       # Extract and install Express

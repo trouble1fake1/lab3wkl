@@ -11,7 +11,7 @@ jobs:
     environment: my_env1  # 👈 This connects to your configured environment
 
     env:
-      API_TOKEN: ${{ vars.TOKEN }}  # 👈 Pulls in the variable from the environment
+      API_TOKEN: ${{ secrets.TOKEN }} # 👈 Pulls in the variable from the environment
 
     steps:
       - name: Checkout code

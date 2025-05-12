@@ -6,11 +6,5 @@ pool:
 
 steps:
 - script: |
-    # Install Python 3.11 if not installed
-    sudo apt install python3
-  displayName: 'Install Python 3.11 if not present'
-
-
-- script: |
     python3 test.py  # Run python File
   displayName: 'Run test.py'

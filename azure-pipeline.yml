@@ -18,4 +18,4 @@ steps:
 
 - script: |
     python3 test.py  # Run python File
-  displayName: 'Run <FILENAME>.py'
+  displayName: 'Run test.py'
